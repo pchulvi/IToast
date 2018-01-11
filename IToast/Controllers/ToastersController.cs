@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using IToast.Models;
@@ -19,12 +16,21 @@ namespace IToast.Controllers
         private IToastContext db = new IToastContext();
 
         // GET: api/Toasters
+        /// <summary>
+        /// GetToasters
+        /// </summary>
+        /// <returns></returns>
         public IQueryable<Toaster> GetToasters()
         {
             return db.Toasters;
         }
 
         // GET: api/Toasters/5
+        /// <summary>
+        /// GetToaster
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ResponseType(typeof(Toaster))]
         public IHttpActionResult GetToaster(int id)
         {
@@ -38,6 +44,12 @@ namespace IToast.Controllers
         }
 
         // PUT: api/Toasters/5
+        /// <summary>
+        /// PutToaster
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="toaster"></param>
+        /// <returns></returns>
         [ResponseType(typeof(void))]
         public IHttpActionResult PutToaster(int id, Toaster toaster)
         {
@@ -73,6 +85,11 @@ namespace IToast.Controllers
         }
 
         // POST: api/Toasters
+        /// <summary>
+        /// PostToaster
+        /// </summary>
+        /// <param name="toaster"></param>
+        /// <returns></returns>
         [ResponseType(typeof(Toaster))]
         public IHttpActionResult PostToaster(Toaster toaster)
         {
@@ -88,6 +105,11 @@ namespace IToast.Controllers
         }
 
         // DELETE: api/Toasters/5
+        /// <summary>
+        /// DeleteToaster
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ResponseType(typeof(Toaster))]
         public IHttpActionResult DeleteToaster(int id)
         {
@@ -103,29 +125,34 @@ namespace IToast.Controllers
             return Ok(toaster);
         }
 
-        // GET: api/Toasters?status=1
+        // GET: api/Toasters?status=1&time=0
+        /// <summary>
+        /// Starts | Stops the toaster
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
         [HttpGet]
         [ResponseType(typeof(Toaster))]
-        public async Task<IHttpActionResult> Toaster(Status status, int time)
+        public async Task<IHttpActionResult> Toaster(Status status, int time = 0)
         {
-            Toaster toaster = new Toaster
-            {
-                Status = status,
-                Time = time
-            };
+            Toaster toaster = db.Toasters.FirstOrDefault();
+            toaster.Status = status;
+            toaster.Time = time;
+            
             db.Entry(toaster).State = EntityState.Modified;
 
             switch (toaster.Status)
             {
                 case Status.On:
-                    while (toaster.Time >= 0)
-                    {
-                        toaster.Time -= 1;
-                        Thread.Sleep(1000);
-                    }
+                    toaster.TimeStart = DateTime.Now.ToShortTimeString();
+                    toaster.TimeEnd = DateTime.Now.AddSeconds(time).ToShortTimeString();
                     break;
 
                 default:
+                    toaster.Profile = Profile.NoProfile;
+                    toaster.TimeStart = new DateTime().ToShortTimeString();
+                    toaster.TimeEnd = new DateTime().ToShortTimeString();
                     break;
             }
 
@@ -138,16 +165,19 @@ namespace IToast.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                //if (!ProjectExists(id))
-                //{
-                //    return NotFound();
-                //}
-                //else
-                //{
-                    throw;
-                //}
+                throw;
             }
             return StatusCode(HttpStatusCode.OK);
+        }
+
+        // GET
+        [HttpGet]
+        public Boolean isToasting(DateTime interval)
+        {
+            Toaster toaster = db.Toasters.FirstOrDefault();
+            return (toaster.Status == Status.On
+                && (interval.CompareTo(toaster.TimeStart) >= 0
+                && interval.CompareTo(toaster.TimeEnd) <= 0));
         }
 
         // POST: api/Toasters?time=10
@@ -209,6 +239,10 @@ namespace IToast.Controllers
             return StatusCode(HttpStatusCode.OK);
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -218,9 +252,15 @@ namespace IToast.Controllers
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// TOasterExists
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private bool ToasterExists(int id)
         {
             return db.Toasters.Count(e => e.Id == id) > 0;
         }
-    }
+
+     }
 }
