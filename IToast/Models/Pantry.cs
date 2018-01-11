@@ -7,7 +7,7 @@ namespace IToast.Models
 {
     public class Pantry
     {
-        
+
         /*
          * Características de La Depensa:
          * - Tiene un límite de capacidad de almacenamiento de 100 panes
@@ -16,6 +16,14 @@ namespace IToast.Models
          * - Nos puede decir cuántos panes contiene
          * 
          */
+
+        public int Id { get; set; }
+
+        public int NumberOfBreads { get; set; }
+
+        public PantryStatus Status { get; set; }
+
+
 
     }
 }
