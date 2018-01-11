@@ -192,6 +192,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\IToastContext.cs" />
+    <Compile Include="Models\Pantry.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Models\Toaster.cs" />
