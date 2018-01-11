@@ -1,4 +1,7 @@
-﻿namespace IToast.Models
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace IToast.Models
 {
     public class Toaster
     {
@@ -9,6 +12,10 @@
         public int Time { get; set; }
 
         public Profile Profile { get; set; }
+
+        public string TimeStart { get; set; }
+
+        public string TimeEnd { get; set; }
 
     }
 }
