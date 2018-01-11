@@ -21,7 +21,8 @@ namespace IToast.Migrations
                     Time = 0,
                     Profile = Models.Profile.NoProfile,
                     TimeStart = new DateTime().ToShortTimeString(),
-                    TimeEnd = new DateTime().ToShortTimeString() }
+                    TimeEnd = new DateTime().ToShortTimeString(),
+                    ToastsMade = 0}
                 );
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data. E.g.

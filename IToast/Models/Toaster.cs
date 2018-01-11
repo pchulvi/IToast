@@ -17,5 +17,7 @@ namespace IToast.Models
 
         public string TimeEnd { get; set; }
 
+        public int ToastsMade { get; set; }
+
     }
 }
