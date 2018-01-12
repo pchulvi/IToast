@@ -41,9 +41,9 @@ namespace IToast.Migrations
                 );
             }
 
-            if(context.Pantry.Count() == 0)
+            if(context.Pantries.Count() == 0)
             {
-                context.Pantry.AddOrUpdate(
+                context.Pantries.AddOrUpdate(
                     new Models.Pantry
                     {
                         NumberOfBreads = 100,
