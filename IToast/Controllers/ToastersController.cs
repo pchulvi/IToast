@@ -78,7 +78,7 @@ namespace IToast.Controllers
                 case Status.On:
                     if (toaster.NumToasts > 0 && pantry.HasBread())
                     {
-                        //pantry.GetBreads(numToasts);
+                        pantry.GetBreads(toaster.NumToasts);
                         toaster.ToastsMade += toaster.NumToasts;
                         toaster.TimeStart = DateTime.Now.ToString();
                         toaster.TimeEnd = DateTime.Now.AddSeconds(toaster.Time).ToString();
