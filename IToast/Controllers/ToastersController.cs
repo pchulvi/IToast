@@ -52,15 +52,15 @@ namespace IToast.Controllers
             }
         }
 
-        // GET: api/Toasters?status=1
+        // POST: api/Toasters?status=1
         /// <summary>
         /// Turns on/off the toaster. The conditions to turn on the toaster are:
-        /// - There must be toasts in the toaster
-        /// - A time interval must be set
+        /// 1.There must be toasts in the toaster
+        /// 2.A time interval must be set
         /// </summary>
         /// <param name="status">State of the toaster</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [ResponseType(typeof(Toaster))]
         public async Task<IHttpActionResult> Toast(Status status)
         {
@@ -106,6 +106,58 @@ namespace IToast.Controllers
                 throw;
             }
             return StatusCode(HttpStatusCode.OK);
+        }
+
+        /// <summary>
+        /// Toasts with a specific number of toasts and time 
+        /// </summary>
+        /// <param name="numToasts"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ResponseType(typeof(Toaster))]
+        public async Task<IHttpActionResult> Toast(int numToasts, int time)
+        {
+            try
+            {
+                InsertToasts(numToasts);
+                SetTime(time);
+                await (Toast(Status.On));
+
+                return StatusCode(HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Not implemented yet
+        /// </summary>
+        /// <param name="numToasts"></param>
+        /// <param name="profile"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ResponseType(typeof(Toaster))]
+        public async Task<IHttpActionResult> Toast(int numToasts, Profile profile, Database date)
+        {
+            try
+            {
+                //Debe existir un proceso que reciba la fecha/hora y que ejecute el tostado
+
+                //SetProfile(profile);
+                //InsertToasts(numToasts);
+                //await Toast(Status.On);
+
+                return StatusCode(HttpStatusCode.OK);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         // GET: api/Toasters?interval=01/01/2018 10:00:00
