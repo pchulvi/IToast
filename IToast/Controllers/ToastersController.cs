@@ -27,31 +27,6 @@ namespace IToast.Controllers
             return db.Toasters;
         }
 
-        // POST: api/Toasters?numToasts=2
-        /// <summary>
-        /// Adds toasts to the toaster. The maximum number of toasts is 2
-        /// </summary>
-        /// <param name="numToasts">Number of toasts</param>
-        [HttpPost]
-        public void InsertToasts(int numToasts)
-        {
-            if (numToasts > 2) throw new Exception("The maximum number of toasts is 2.");
-
-            Toaster toaster = db.Toasters.FirstOrDefault();
-            toaster.NumToasts = numToasts;
-
-            db.Entry(toaster).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-        }
-
         // POST: api/Toasters?status=1
         /// <summary>
         /// Turns on/off the toaster. The conditions to turn on the toaster are:
@@ -120,7 +95,7 @@ namespace IToast.Controllers
         {
             try
             {
-                InsertToasts(numToasts);
+                SetToasts(numToasts);
                 SetTime(time);
                 await (Toast(Status.On));
 
@@ -149,7 +124,7 @@ namespace IToast.Controllers
                 //Debe existir un proceso que reciba la fecha/hora y que ejecute el tostado
 
                 //SetProfile(profile);
-                //InsertToasts(numToasts);
+                //SetToasts(numToasts);
                 //await Toast(Status.On);
 
                 return StatusCode(HttpStatusCode.OK);
@@ -201,6 +176,7 @@ namespace IToast.Controllers
         /// </summary>
         /// <param name="time">Number of seconds</param>
         /// <returns></returns>
+        [HttpPut]
         [ResponseType(typeof(Toaster))]
         public IHttpActionResult SetTime(int time)
         {
@@ -222,12 +198,13 @@ namespace IToast.Controllers
             return StatusCode(HttpStatusCode.OK);
         }
 
-        // POST: api/Toasters?profile=1
+        // PUT: api/Toasters?profile=1
         /// <summary>
         /// Sets the current profile of the toaster
         /// </summary>
         /// <param name="profile">NoProfile = 0 | Low = 1 | Normal = 2 | High = 3 | Burnt = 4</param>
         /// <returns></returns>
+        [HttpPut]
         [ResponseType(typeof(Toaster))]
         public IHttpActionResult SetProfile(Profile profile)
         {
@@ -268,6 +245,31 @@ namespace IToast.Controllers
             }
 
             return StatusCode(HttpStatusCode.OK);
+        }
+
+        // PUT: api/Toasters?numToasts=2
+        /// <summary>
+        /// Sets the number of toasts in the toaster. The maximum number of toasts is 2
+        /// </summary>
+        /// <param name="numToasts">Number of toasts</param>
+        [HttpPut]
+        public void SetToasts(int numToasts)
+        {
+            if (numToasts > 2) throw new Exception("The maximum number of toasts is 2.");
+
+            Toaster toaster = db.Toasters.FirstOrDefault();
+            toaster.NumToasts = numToasts;
+
+            db.Entry(toaster).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
         }
 
         /// <summary>
