@@ -7,7 +7,21 @@ using System.Web.Http;
 
 namespace IToast.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SuperMarketController : ApiController
     {
+        /// <summary>
+        /// Action of selling bread from Supermarket
+        /// </summary>
+        /// <param name="nBreads">Number of breads</param>
+        /// <returns></returns>
+        public int SellBread(int nBreads)
+        {
+            if (nBreads < 1) throw new Exception("I can't sell less 1 bread");
+            if (nBreads > 60) throw new Exception("I can't sell more than 60 breads");
+            return nBreads;
+        }
     }
 }

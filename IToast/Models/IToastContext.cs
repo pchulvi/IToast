@@ -20,7 +20,7 @@ namespace IToast.Models
         }
 
         public System.Data.Entity.DbSet<IToast.Models.Toaster> Toasters { get; set; }
-        public System.Data.Entity.DbSet<IToast.Models.Pantry> Pantry { get; set; }
-        public System.Data.Entity.DbSet<IToast.Models.SuperMarket> SuperMarket { get; set; }
+        public System.Data.Entity.DbSet<IToast.Models.Pantry> Pantries { get; set; }
+        public System.Data.Entity.DbSet<IToast.Models.SuperMarket> SuperMarkets { get; set; }
     }
 }

@@ -1,5 +1,8 @@
 ﻿namespace IToast.Models
 {
+    /// <summary>
+    /// Enumeration status of our pantry
+    /// </summary>
     public enum PantryStatus
     {
         Empty = 0,

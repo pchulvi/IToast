@@ -14,6 +14,18 @@ namespace IToast.Migrations
         protected override void Seed(Models.IToastContext context)
         {
             //  This method will be called after migrating to the latest version.
+
+            context.Toasters.AddOrUpdate(
+                new Models.Toaster { Status = Models.Status.Off, Time = 0, Profile = Models.Profile.NoProfile }
+                
+                );
+
+            context.Pantries.AddOrUpdate(
+                new Models.Pantry { Status = Models.PantryStatus.Full, NumberOfBreads = 100}
+                );
+
+
+
             if(context.Toasters.Count() == 0)
             {
                 context.Toasters.AddOrUpdate(
@@ -40,6 +52,7 @@ namespace IToast.Migrations
                     );
             }
             
+
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data. E.g.
             //
