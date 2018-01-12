@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+﻿using System.Data.Entity;
 
 namespace IToast.Models
 {
@@ -15,12 +11,15 @@ namespace IToast.Models
         // For more information refer to the documentation:
         // http://msdn.microsoft.com/en-us/data/jj591621.aspx
     
+            /// <summary>
+            /// 
+            /// </summary>
         public IToastContext() : base("name=IToastContext")
         {
         }
 
-        public System.Data.Entity.DbSet<IToast.Models.Toaster> Toasters { get; set; }
-        public System.Data.Entity.DbSet<IToast.Models.Pantry> Pantries { get; set; }
-        public System.Data.Entity.DbSet<IToast.Models.SuperMarket> SuperMarkets { get; set; }
+        public DbSet<Toaster> Toasters { get; set; }
+        public DbSet<Pantry> Pantries { get; set; }
+        public DbSet<SuperMarket> SuperMarkets { get; set; }
     }
 }
