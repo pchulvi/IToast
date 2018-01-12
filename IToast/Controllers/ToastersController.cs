@@ -7,7 +7,6 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using IToast.Models;
 using System.Threading.Tasks;
-using System.Threading;
 
 namespace IToast.Controllers
 {
@@ -28,9 +27,36 @@ namespace IToast.Controllers
             return db.Toasters;
         }
 
+        // POST: api/Toasters?numToasts=2
+        /// <summary>
+        /// Adds toasts to the toaster. The maximum number of toasts is 2
+        /// </summary>
+        /// <param name="numToasts">Number of toasts</param>
+        [HttpPost]
+        public void InsertToasts(int numToasts)
+        {
+            if (numToasts > 2) throw new Exception("The maximum number of toasts is 2.");
+
+            Toaster toaster = db.Toasters.FirstOrDefault();
+            toaster.NumToasts = numToasts;
+
+            db.Entry(toaster).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
         // GET: api/Toasters?status=1
         /// <summary>
-        /// Starts | Stops the toaster
+        /// Turns on/off the toaster. The conditions to turn on the toaster are:
+        /// - There must be toasts in the toaster
+        /// - A time interval must be set
         /// </summary>
         /// <param name="status">State of the toaster</param>
         /// <returns></returns>
@@ -39,7 +65,8 @@ namespace IToast.Controllers
         public async Task<IHttpActionResult> Toast(Status status)
         {
             Toaster toaster = db.Toasters.FirstOrDefault();
-
+            PantryController pantry = new PantryController();
+            
             if (toaster.Status == status) return StatusCode(HttpStatusCode.NoContent);
             
             toaster.Status = status;
@@ -49,12 +76,19 @@ namespace IToast.Controllers
             switch (toaster.Status)
             {
                 case Status.On:
-                    toaster.ToastsMade += 1;
-                    toaster.TimeStart = DateTime.Now.ToString();
-                    toaster.TimeEnd = DateTime.Now.AddSeconds(toaster.Time).ToString();
+                    if (toaster.NumToasts > 0 && pantry.HasBread())
+                    {
+                        //pantry.GetBreads(numToasts);
+                        toaster.ToastsMade += toaster.NumToasts;
+                        toaster.TimeStart = DateTime.Now.ToString();
+                        toaster.TimeEnd = DateTime.Now.AddSeconds(toaster.Time).ToString();
+                    }
+                    else
+                        throw new Exception("No bread in the Toaster.");
                     break;
 
                 default:
+                    toaster.NumToasts = 0;
                     toaster.Profile = Profile.NoProfile;
                     toaster.TimeStart = new DateTime().ToString();
                     toaster.TimeEnd = new DateTime().ToString();
@@ -79,7 +113,7 @@ namespace IToast.Controllers
         /// Returns whether the toaster is toasting or not
         /// </summary>
         /// <param name="interval">Current dateTime interval</param>
-        /// <returns></returns>
+        /// <returns>True = toasting | False = not toasting</returns>
         [HttpGet]
         [ResponseType(typeof(Toaster))]
         public Boolean IsToasting(DateTime interval)
@@ -95,7 +129,7 @@ namespace IToast.Controllers
         /// <summary>
         /// Gets remaining time of the Toaster to be finished
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Number of seconds remaining</returns>
         [HttpPost]
         public int TimeRemaining()
         {
@@ -141,7 +175,7 @@ namespace IToast.Controllers
         /// Sets the current profile of the toaster
         /// </summary>
         /// <param name="profile">NoProfile = 0 | Low = 1 | Normal = 2 | High = 3 | Burnt = 4</param>
-        /// <returns>True | False</returns>
+        /// <returns></returns>
         [ResponseType(typeof(Toaster))]
         public IHttpActionResult SetProfile(Profile profile)
         {
