@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IToast", "IToast\IToast.csproj", "{2C768A69-25CE-4CA4-A796-A3DFE362FC56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTest", "WebTest\WebTest.csproj", "{F6715A50-896D-446A-BF40-367A31FC9CFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2C768A69-25CE-4CA4-A796-A3DFE362FC56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C768A69-25CE-4CA4-A796-A3DFE362FC56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C768A69-25CE-4CA4-A796-A3DFE362FC56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6715A50-896D-446A-BF40-367A31FC9CFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6715A50-896D-446A-BF40-367A31FC9CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6715A50-896D-446A-BF40-367A31FC9CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6715A50-896D-446A-BF40-367A31FC9CFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
