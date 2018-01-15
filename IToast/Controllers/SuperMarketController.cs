@@ -8,7 +8,7 @@ using System.Web.Http;
 namespace IToast.Controllers
 {
     /// <summary>
-    /// 
+    /// SuperMarketController Class
     /// </summary>
     public class SuperMarketController : ApiController
     {
