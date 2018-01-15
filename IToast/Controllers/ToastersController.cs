@@ -17,7 +17,6 @@ namespace IToast.Controllers
     {
         private IToastContext db = new IToastContext();
 
-        // GET: api/Toasters
         /// <summary>
         /// Gets Toaster info
         /// </summary>
@@ -27,6 +26,17 @@ namespace IToast.Controllers
         public IQueryable<Toaster> GetToasters()
         {
             return db.Toasters;
+        }
+
+        /// <summary>
+        /// Gets current status of the toaster
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/toasters/getstatus")]
+        [HttpGet]
+        public Status GetCurrentStatus()
+        {
+            return db.Toasters.FirstOrDefault().Status;
         }
 
         // POST: api/toasters/toast/{status}
@@ -40,11 +50,11 @@ namespace IToast.Controllers
         [Route("api/toasters/toast/{status}")]
         [HttpPut]
         [ResponseType(typeof(Toaster))]
-        public async Task<IHttpActionResult> Toast(Status status)
+        public Status Toast(Status status)
         {
             Toaster toaster = db.Toasters.FirstOrDefault();
             
-            if (toaster.Status == status) return StatusCode(HttpStatusCode.NoContent);
+            if (toaster.Status == status) return status;
             
             toaster.Status = status;
             
@@ -75,13 +85,13 @@ namespace IToast.Controllers
 
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
                 throw;
             }
-            return StatusCode(HttpStatusCode.OK);
+            return toaster.Status;
         }
 
         /// <summary>
@@ -93,15 +103,15 @@ namespace IToast.Controllers
         [Route("api/toasters/toast/numToasts/{numToasts}/time/{time}")]
         [HttpPut]
         [ResponseType(typeof(Toaster))]
-        public async Task<IHttpActionResult> Toast(int numToasts, int time)
+        public Status Toast(int numToasts, int time)
         {
             try
             {
                 SetToasts(numToasts);
                 SetTime(time);
-                await (Toast(Status.On));
 
-                return StatusCode(HttpStatusCode.OK);
+                return Toast(Status.On);
+
             }
             catch (Exception ex)
             {
@@ -128,7 +138,7 @@ namespace IToast.Controllers
 
                 //SetProfile(profile);
                 //SetToasts(numToasts);
-                await Toast(Status.On);
+                Toast(Status.On);
 
                 return StatusCode(HttpStatusCode.OK);
             }
@@ -194,7 +204,7 @@ namespace IToast.Controllers
         [Route("api/toasters/settime/{time}")]
         [HttpPatch]
         [ResponseType(typeof(Toaster))]
-        public IHttpActionResult SetTime(int time)
+        public int SetTime(int time)
         {
             Toaster toaster = db.Toasters.FirstOrDefault();
             toaster.Time = time;
@@ -211,7 +221,7 @@ namespace IToast.Controllers
                 throw;
             }
 
-            return StatusCode(HttpStatusCode.OK);
+            return time;
         }
 
         /// <summary>
@@ -222,7 +232,7 @@ namespace IToast.Controllers
         [Route("api/toasters/setprofile/{profile}")]
         [HttpPatch]
         [ResponseType(typeof(Toaster))]
-        public IHttpActionResult SetProfile(Profile profile)
+        public Profile SetProfile(Profile profile)
         {
             Toaster toaster = db.Toasters.FirstOrDefault();
             toaster.Profile = profile;
@@ -260,7 +270,7 @@ namespace IToast.Controllers
                 throw;
             }
 
-            return StatusCode(HttpStatusCode.OK);
+            return toaster.Profile;
         }
 
         /// <summary>
@@ -269,7 +279,7 @@ namespace IToast.Controllers
         /// <param name="numToasts">Number of toasts</param>
         [Route("api/toasters/settoasts/{numToasts}")]
         [HttpPatch]
-        public void SetToasts(int numToasts)
+        public int SetToasts(int numToasts)
         {
             if (numToasts > 2) throw new Exception("The maximum number of toasts is 2.");
 
@@ -291,6 +301,8 @@ namespace IToast.Controllers
             {
                 throw;
             }
+
+            return toaster.NumToasts;
         }
 
         /// <summary>
