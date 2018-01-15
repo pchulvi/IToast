@@ -65,7 +65,9 @@ namespace IToast.Controllers
             Pantry pantry = db.Pantries.FirstOrDefault();
             pantry.NumberOfBreads = pantry.NumberOfBreads - nBreads;
 
-            if (pantry.NumberOfBreads < 0) throw new Exception(String.Format("Insufficient breads for toasting. There are {0} breads now in pantry.",pantry.NumberOfBreads));
+
+            if (pantry.NumberOfBreads < 0) throw new Exception(String.Format("Insufficient breads for toasting. There are {0} breads now in pantry.", pantry.NumberOfBreads));
+
 
             db.SaveChanges();
 

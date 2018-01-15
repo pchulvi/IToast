@@ -22,12 +22,14 @@ namespace IToast.Controllers
         /// Gets Toaster info
         /// </summary>
         /// <returns></returns>
+        [Route("api/toasters/gettoasters")]
+        [HttpGet]
         public IQueryable<Toaster> GetToasters()
         {
             return db.Toasters;
         }
 
-        // POST: api/Toasters?status=1
+        // POST: api/toasters/toast/{status}
         /// <summary>
         /// Turns on/off the toaster. The conditions to turn on the toaster are:
         /// 1.There must be toasts in the toaster
@@ -35,12 +37,12 @@ namespace IToast.Controllers
         /// </summary>
         /// <param name="status">State of the toaster</param>
         /// <returns></returns>
+        [Route("api/toasters/toast/{status}")]
         [HttpPost]
         [ResponseType(typeof(Toaster))]
         public async Task<IHttpActionResult> Toast(Status status)
         {
             Toaster toaster = db.Toasters.FirstOrDefault();
-            PantryController pantry = new PantryController();
             
             if (toaster.Status == status) return StatusCode(HttpStatusCode.NoContent);
             
@@ -51,9 +53,8 @@ namespace IToast.Controllers
             switch (toaster.Status)
             {
                 case Status.On:
-                    if (toaster.NumToasts > 0 && pantry.HasBread())
+                    if (toaster.NumToasts > 0)
                     {
-                        pantry.GetBreads(toaster.NumToasts);
                         toaster.ToastsMade += toaster.NumToasts;
                         toaster.TimeStart = DateTime.Now.ToString();
                         toaster.TimeEnd = DateTime.Now.AddSeconds(toaster.Time).ToString();
@@ -89,7 +90,8 @@ namespace IToast.Controllers
         /// <param name="numToasts"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        [HttpPost]
+        [Route("api/toasters/toast/numToasts/{numToasts}/time/{time}")]
+        [HttpGet]
         [ResponseType(typeof(Toaster))]
         public async Task<IHttpActionResult> Toast(int numToasts, int time)
         {
@@ -115,9 +117,10 @@ namespace IToast.Controllers
         /// <param name="profile"></param>
         /// <param name="date"></param>
         /// <returns></returns>
+        [Route("api/toasters/toast/numToasts/{numToasts}/profile/{profile}/date/{date}")]
         [HttpPost]
         [ResponseType(typeof(Toaster))]
-        public async Task<IHttpActionResult> Toast(int numToasts, Profile profile, Database date)
+        public async Task<IHttpActionResult> Toast(int numToasts, Profile profile, DateTime date)
         {
             try
             {
@@ -125,7 +128,7 @@ namespace IToast.Controllers
 
                 //SetProfile(profile);
                 //SetToasts(numToasts);
-                //await Toast(Status.On);
+                await Toast(Status.On);
 
                 return StatusCode(HttpStatusCode.OK);
             }
@@ -141,6 +144,7 @@ namespace IToast.Controllers
         /// </summary>
         /// <param name="interval">Current dateTime interval</param>
         /// <returns>True = toasting | False = not toasting</returns>
+        [Route("api/toasters/istoasting/{interval}")]
         [HttpGet]
         [ResponseType(typeof(Toaster))]
         public Boolean IsToasting(DateTime interval)
@@ -157,7 +161,8 @@ namespace IToast.Controllers
         /// Gets remaining time of the Toaster to be finished
         /// </summary>
         /// <returns>Number of seconds remaining</returns>
-        [HttpPost]
+        [Route("api/toasters/timeremaining")]
+        [HttpGet]
         public int TimeRemaining()
         {
             Toaster toaster = db.Toasters.FirstOrDefault();
@@ -176,6 +181,7 @@ namespace IToast.Controllers
         /// </summary>
         /// <param name="time">Number of seconds</param>
         /// <returns></returns>
+        [Route("api/toasters/settime/{time}")]
         [HttpPut]
         [ResponseType(typeof(Toaster))]
         public IHttpActionResult SetTime(int time)
@@ -204,6 +210,7 @@ namespace IToast.Controllers
         /// </summary>
         /// <param name="profile">NoProfile = 0 | Low = 1 | Normal = 2 | High = 3 | Burnt = 4</param>
         /// <returns></returns>
+        [Route("api/toasters/setprofile/{profile}")]
         [HttpPut]
         [ResponseType(typeof(Toaster))]
         public IHttpActionResult SetProfile(Profile profile)
@@ -252,13 +259,16 @@ namespace IToast.Controllers
         /// Sets the number of toasts in the toaster. The maximum number of toasts is 2
         /// </summary>
         /// <param name="numToasts">Number of toasts</param>
+        [Route("api/toasters/settoasts/{numToasts}")]
         [HttpPut]
         public void SetToasts(int numToasts)
         {
             if (numToasts > 2) throw new Exception("The maximum number of toasts is 2.");
 
             Toaster toaster = db.Toasters.FirstOrDefault();
-            toaster.NumToasts = numToasts;
+            PantryController pantry = new PantryController();
+            
+            toaster.NumToasts = pantry.GetBreads(numToasts);
 
             db.Entry(toaster).State = EntityState.Modified;
 
