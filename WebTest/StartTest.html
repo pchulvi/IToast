@@ -9,7 +9,8 @@
         <input id="minutesInput" type="number" min="0" max="59" placeholder="00" style="width: 50px" />
         <span>:</span>
         <input id="secondsInput" type="number" min="0" max="59" placeholder="00" maxlength="2" style="width: 50px" />
-        <input type="button" value="Start / Stop" />
+        <input type="button" value="Start" onclick="toast(1);" />
+        <input type="button" value="Stop" onclick="toast(0);" />
     </div>
     <div>
         <br />
@@ -17,3 +18,30 @@
     </div>
 </body>
 </html>
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+<script>
+    var uri = '/api/toasters/';
+
+    onload = () => {
+        //Set values
+    }
+
+    function toast(on) {
+        //var path = uri + "/toast/{status}";
+
+        $.ajax({
+            type: "POST",
+            url: uri + "/toast/" + on,
+            //data: JSON.stringify(on),
+            contentType: "application/json;charset=utf-8",
+            success: function (data, status, xhr) {
+                alert('ok');
+            },
+            error: function (xhr) {
+                alert(xhr.responseText);
+            }
+        });
+    }
+
+
+</script>
