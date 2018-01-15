@@ -148,24 +148,23 @@ namespace IToast.Controllers
             }
         }
 
-        // GET: api/Toasters?interval=01/01/2018 10:00:00
-        /// <summary>
-        /// Returns whether the toaster is toasting or not
-        /// </summary>
-        /// <param name="interval">Current dateTime interval</param>
-        /// <returns>True = toasting | False = not toasting</returns>
-        [Route("api/toasters/istoasting/{interval}")]
-        [HttpGet]
-        [ResponseType(typeof(Toaster))]
-        public Boolean IsToasting(DateTime interval)
-        {
-            Toaster toaster = db.Toasters.FirstOrDefault();
+        ///// <summary>
+        ///// Returns whether the toaster is toasting or not
+        ///// </summary>
+        ///// <param name="interval">Current dateTime interval</param>
+        ///// <returns>True = toasting | False = not toasting</returns>
+        //[Route("api/toasters/istoasting/{interval}")]
+        //[HttpGet]
+        //[ResponseType(typeof(Toaster))]
+        //public Boolean IsToasting(DateTime interval)
+        //{
+        //    Toaster toaster = db.Toasters.FirstOrDefault();
 
-            int s = interval.CompareTo(DateTime.Parse(toaster.TimeStart));
-            int e = interval.CompareTo(DateTime.Parse(toaster.TimeEnd));
+        //    int s = interval.CompareTo(DateTime.Parse(toaster.TimeStart));
+        //    int e = interval.CompareTo(DateTime.Parse(toaster.TimeEnd));
 
-            return (toaster.Status == Status.On && (s + e == 0 ? true : false));
-        }
+        //    return (toaster.Status == Status.On && (s + e == 0 ? true : false));
+        //}
 
         /// <summary>
         /// Gets remaining time of the Toaster to be finished
