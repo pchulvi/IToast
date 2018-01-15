@@ -56,15 +56,20 @@ namespace IToast.Controllers
         
         [Route("api/pantry/breads/{nBreads}")]
         [HttpGet]
-        public void GetBreads(int nBreads)
+        public int GetBreads(int nBreads)
         {
             //if (nBreads < 1) throw new Exception("The number of breads can't be 0 or less 0.");
             if (nBreads > 2) throw new Exception("You can't get more than 2 breads at same time.");
 
+
             Pantry pantry = db.Pantries.FirstOrDefault();
             pantry.NumberOfBreads = pantry.NumberOfBreads - nBreads;
 
+            if (pantry.NumberOfBreads < 0) throw new Exception(String.Format("Insufficient breads for toasting. There are {0} breads now in pantry.",pantry.NumberOfBreads));
+
             db.SaveChanges();
+
+            return nBreads;
         }
 
         /// <summary>
